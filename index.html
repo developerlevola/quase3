@@ -74,7 +74,7 @@
   <div id="modalContainer" style="display:none"></div>
 
 <!-- black overlay for final -->
-<div id="blackOverlay" class="black-overlay" aria-hidden="true"
+<div id="blackOverlay" aria-hidden="true"
      style="
        position: fixed;
        top: 0;
@@ -83,41 +83,33 @@
        height: 100%;
        background: black;
        display: flex;
-       flex-direction: column;
        justify-content: center;
        align-items: center;
+       flex-direction: column;
        text-align: center;
+       color: white;
        z-index: 9999;
+       overflow: hidden;
      ">
-  
-  <!-- Área das respostas secretas -->
-  <div id="answersArea" 
-       style="opacity:0;transition:opacity .7s, transform .7s; transform:translateY(10px)">
-    <div class="answers-box">
-      <h3>Respostas secretas</h3>
-      <div id="answersList" class="answers-list"></div>
-    </div>
-  </div>
 
   <!-- Área do recado final -->
-  <div id="recadoArea" 
+  <div id="recadoArea"
        style="
-         opacity:0;
-         transition:opacity .7s, transform .7s;
-         transform:translateY(10px);
-         width:90%;
-         max-width:900px;
-         color:white;
-         font-size:1.2rem;
-         line-height:1.6;
+         opacity: 0;
+         transition: opacity .7s, transform .7s;
+         transform: translateY(10px);
+         width: 90%;
+         max-width: 900px;
+         font-size: 1.2rem;
+         line-height: 1.6;
        ">
-    <div class="recado" style="margin-bottom: 20px; font-weight: bold; font-size: 1.4rem;">
+    <div class="recado" 
+         style="margin-bottom: 20px; font-weight: bold; font-size: 1.5rem;">
       Tenho um recado pra você:
     </div>
     <div id="typewriter" class="type-text"></div>
   </div>
 </div>
-
 
 <script>
 /* ======================
@@ -506,4 +498,5 @@ document.addEventListener('keydown', e=>{
 </script>
 </body>
 </html>
+
 

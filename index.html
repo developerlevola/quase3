@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Feliz quase 3 meses</title>
+<style>
+  :root{
+    --bg:#0b1020; --card:#0f1724; --accent:#ff6b81; --muted:#9aa4b2;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#071026 0%, #071a2a 60%);color:#e6eef6}
+  .wrap{max-width:920px;margin:28px auto;padding:22px}
+  header{display:flex;gap:16px;align-items:center}
+  h1{margin:0;font-size:20px}
+  .lead{margin:6px 0 18px;color:var(--muted)}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:20px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  .screen{min-height:420px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:18px}
+  .big{font-size:18px;margin:6px 0 14px}
+  .muted{color:var(--muted);font-size:14px}
+  .btn{background:var(--accent);border:none;padding:12px 18px;border-radius:12px;color:white;font-weight:700;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,107,129,0.18)}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+  .start-btn{font-size:18px;padding:14px 26px;border-radius:14px;animation: pulse 2000ms infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,107,129,0.18)}50%{box-shadow:0 8px 30px 8px rgba(255,107,129,0.06)}100%{box-shadow:0 0 0 0 rgba(255,107,129,0.0)}}
+  .choices{display:flex;flex-direction:column;gap:12px;margin-top:12px;width:100%;max-width:760px}
+  .choice{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;cursor:pointer;border:1px solid rgba(255,255,255,0.02);text-align:left}
+  .choice:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+  .progress{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;margin-top:14px;overflow:hidden}
+  .progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#ff9aa6);width:0%}
+  .terminal{background:#061223;border-radius:8px;padding:12px;text-align:left;max-width:760px;width:100%;color:#9be3ff;font-family:monospace}
+  /* modal */
+  .modal-bg{position:fixed;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(3,6,12,0.6);z-index:500}
+  .modal{background:var(--card);padding:18px;border-radius:12px;max-width:720px;width:92%;box-shadow:0 12px 40px rgba(2,6,23,0.7)}
+  .input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;font-size:15px}
+  .small{font-size:13px;color:var(--muted);margin-top:8px}
+  /* final overlay */
+  .black-overlay{position:fixed;left:0;top:0;width:100%;height:100%;background:#000;opacity:0;pointer-events:none;transition:opacity 1000ms ease;z-index:600;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:24px;color:#fff}
+  .answers-box{max-width:900px;width:96%;background:linear-gradient(180deg,#071629,#0f2431);padding:22px;border-radius:12px;text-align:left;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+  .answers-list{margin-top:10px;display:grid;gap:8px}
+  .answer-item{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
+  .recado{margin-top:18px;font-weight:700;font-size:18px;color:var(--accent)}
+  .type-text{margin-top:12px;white-space:pre-wrap;line-height:1.6;font-size:18px;color:var(--accent)}
+  @media (max-width:640px){.wrap{padding:14px}.big{font-size:16px}.type-text{font-size:16px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#1b2735,#092033);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)">3M</div>
+      <div>
+        <h1>Debugando</h1>
+        <div class="lead">Um quiz para comemorar nossos 3 meses.</div>
+      </div>
+    </header>
+
+    <main class="card" id="card">
+      <div id="screen" class="screen">
+        <div class="big">🤍 Bem-vindo Gui !</div>
+        <div class="muted" style="max-width:680px;margin-bottom:18px">Um aviso antes de começar: Responda tudo com a maior sinceridade, tudo e todas as perguntas!</div>
+        <button id="startBtn" class="btn start-btn">🤍 Iniciar 🤍</button>
+      </div>
+      <div class="progress"><i id="bar"></i></div>
+      <footer style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+        <div class="muted">Clique para começar quando estiver pronto 💕</div>
+        <div><button id="restartBtn" class="btn ghost" style="display:none">Reiniciar</button></div>
+      </footer>
+    </main>
+  </div>
+
+  <canvas id="confettiCanvas" class="confetti"></canvas>
+
+  <!-- modal container (hidden by default) -->
+  <div id="modalContainer" style="display:none"></div>
+
+  <!-- black overlay for final -->
+  <div id="blackOverlay" class="black-overlay" aria-hidden="true">
+    <div id="answersArea" style="opacity:0;transition:opacity .7s, transform .7s; transform:translateY(10px)">
+      <div class="answers-box">
+        <h3>Respostas secretas</h3>
+        <div id="answersList" class="answers-list"></div>
+      </div>
+    </div>
+    <div id="recadoArea" style="opacity:0;transition:opacity .7s, transform .7s; transform:translateY(10px);width:90%;max-width:900px">
+      <div class="recado">Tenho um recado pra você:</div>
+      <div id="typewriter" class="type-text"></div>
+    </div>
+  </div>
+
+<script>
+/* ======================
+   CONFIG - cole seu MP3 do Catbox aqui
+   ====================== */
+const FINAL_AUDIO_URL = 'PASTE_YOUR_CATBOX_URL_HERE';
+const FINAL_MESSAGE = `Três meses de nós.
+Três meses de bugs, risadas e amor.
+Que venham mais commits de carinho e novas versões da gente. ❤️`;
+
+/* ======================
+   STAGES (coleu seu objeto STAGES)
+   ====================== */
+const STAGES = [
+  {id:'q1', title:'Pergunta 1', text:'Se tivesse que escolher uma palavra pra definir como tudo começou entre a gente, qual seria?', type:'choice',
+    choices:[{label:'Inesperado',value:'inesp'},{label:'Divertido',value:'div'},{label:'Mágico',value:'mag'}]},
+  {id:'q2', title:'Pergunta 2', text:'O que mais te chamou atenção em mim no início?', type:'choice',
+    choices:[{label:'Minha voz',value:'voz'},{label:'Meu jeito',value:'jeito'},{label:'Minhas loucuras',value:'louc'}]},
+  {id:'q3', title:'Pergunta 3', text:'Quando a gente se conheceu no RP, você imaginava que chegaríamos até aqui?', type:'choice',
+    choices:[{label:'Nem de longe 😳',value:'nl'},{label:'Talvez...',value:'tb'},{label:'Sempre soube 💖',value:'sempre'}]},
+  {id:'q4', title:'Pergunta 4', text:'O que mais te faz sorrir quando estamos juntos?', type:'choice',
+    choices:[{label:'Suas piadas bobas',value:'piadas'},{label:'Seu carinho',value:'carinho'},{label:'Seu jeito de ser',value:'olhar'}]},
+  {id:'q5', title:'Pergunta 5', text:'Defina nosso relacionamento hoje:', type:'choice',
+    choices:[{label:'Companherismo',value:'fofo'},{label:'Lealdade',value:'rnd'},{label:'Indiferença',value:'rir'}]},
+  {id:'invis-6', title:'Pergunta Sincera 1', text:'Qual a coisa que você mais admira em mim e nunca falou?', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q7', title:'Pergunta 7', text:'O que mais te faz sentir que somos companheiros?', type:'choice',
+    choices:[{label:'A conexão que temos',value:'conn'},{label:'As conversas profundas',value:'conv'},{label:'A sensação de “casa” que você me traz',value:'casa'}]},
+  {id:'q8', title:'Pergunta 8', text:'Qual dessas coisas mais parece com a gente?', type:'choice',
+    choices:[{label:'Dois malucos',value:'mal'},{label:'Um acaso que virou minha casa',value:'bug'},{label:'Um errado que deu certo',value:'loop'}]},
+  {id:'q9', title:'Pergunta 9', text:'O que mais representa nosso jeito juntos?', type:'choice',
+    choices:[{label:'Risos aleatórios',value:'risos'},{label:'Conversa até dormir',value:'dormir'},{label:'Carinho em cada palavra',value:'car'}]},
+  {id:'q10', title:'Pergunta 10', text:'Quem é mais carente?', type:'choice',
+    choices:[{label:'Eu 🥺',value:'eu'},{label:'Você 😌',value:'vc'},{label:'Empate técnico 😅',value:'amb'}]},
+  {id:'q11', title:'Pergunta Sincera 2', text:'Oque é mais bizarro pra você quando se trata de nós?', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q12', title:'Pergunta 12', text:'Se alguém te perguntasse o que somos, o que você diria?', type:'choice',
+    choices:[{label:'Algo que só a gente entende',value:'risadas'},{label:'Um acaso bonito',value:'juntos'},{label:'Um “nós” fora do comum',value:'bug'}]},
+  {id:'invis-13', title:'Pergunta Sincera 3', text:'O que você mais gosta em mim?', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q14', title:'Pergunta 14', text:'O que você acha que faz a gente dar certo?', type:'choice',
+    choices:[{label:'A confiança',value:'rom'},{label:'O respeito',value:'open'},{label:'O amor que nunca falta',value:'sim'}]},
+  {id:'q15', title:'Pergunta 15', text:'Quem é mais ciumento?', type:'choice',
+    choices:[{label:'Eu 😳',value:'eu'},{label:'Você 😏',value:'vc'},{label:'Acho que os dois 🤭',value:'amb'}]},
+  {id:'q16', title:'Pergunta 16', text:'O que faz você sentir saudade mais rápido?', type:'choice',
+    choices:[{label:'A voz',value:'voz'},{label:'O carinho',value:'car'},{label:'As brincadeiras',value:'brinc'}]},
+  {id:'q17', title:'Pergunta 17', text:'Qual emoji define melhor a gente?', type:'choice',
+    choices:[{label:'❤️',value:'heart'},{label:'😂',value:'lol'},{label:'🔥',value:'fire'}]},
+  {id:'q18', title:'Pergunta 18', text:'Qual é a parte mais “nossa” do dia?', type:'choice',
+    choices:[{label:'Boa noite com carinho',value:'bn'},{label:'As conversas aleatórias',value:'ale'},{label:'As risadas do nada',value:'ris'}]},
+  {id:'q19', title:'Pergunta 19', text:'Qual sentimento mais aparece quando pensa na gente?', type:'choice',
+    choices:[{label:'Saudade boa',value:'msc'},{label:'Calma',value:'ris'},{label:'Aquela vontade de estar junto',value:'oi'}]},
+  {id:'q20', title:'Pergunta 20', text:'O que mais te faz sentir orgulho da gente?', type:'choice',
+    choices:[{label:'A forma que nos entendemos',value:'ent'},{label:'O cuidado um com o outro',value:'cuid'},{label:'O amor constante',value:'amor'}]},
+  {id:'invis-21', title:'Pergunta Sincera 4', text:'Se pudesse me dizer algo agora, sem pensar muito, o que seria?', type:'invisible', placeholder:'Escreva aqui...'},
+ {id:'invis-22', title:'Pergunta Sincera 5', text:'Quando pensa em mim, o que costuma vir primeiro à mente?', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q23', title:'Pergunta 23', text:'Quem manda mais figurinhas bobas?', type:'choice',
+    choices:[{label:'Eu',value:'eu'},{label:'Você',value:'vc'},{label:'Empate técnico',value:'amb'}]},
+  {id:'q24', title:'Pergunta 24', text:'Qual sensação define melhor o que eu te faço sentir?', type:'choice',
+    choices:[{label:'Paz',value:'paz'},{label:'Alegria',value:'ale'},{label:'Borboletas',value:'borb'}]},
+  {id:'invis-25', title:'Pergunta Sincera 6', text:'Se tivesse que descrever o que somos em uma frase curta, qual seria?', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q26', title:'Pergunta 26', text:'O que mais faz você sentir que é amor?', type:'choice',
+    choices:[{label:'O conforto de estar junto',value:'rosa'},{label:'A leveza nas conversas',value:'lilas'},{label:'A saudade que vira sorriso',value:'verm'}]},
+  {id:'q27', title:'Pergunta 27', text:'O que mais te deixa confortável comigo?', type:'choice',
+    choices:[{label:'Poder ser quem eu sou',value:'eu'},{label:'Saber que você entende',value:'ent'},{label:'A calma que me traz',value:'calma'}]},
+  {id:'q28', title:'Pergunta 28', text:'Se nossa história fosse um filme, qual seria o título?', type:'choice',
+    choices:[{label:'Um “até logo” que vira sempre',value:'risos'},{label:'Um eu te amo que diz tudo',value:'bug'},{label:'Os dois rindo juntos',value:'conn'}]},
+  {id:'invis-29', title:'Pergunta Sincera 7', text:'Qual é o maior sonho que você tem pra nós dois?', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q30', title:'Pergunta 30', text:'Se eu te mandasse uma mensagem agora, o que esperaria ler?', type:'choice',
+    choices:[{label:'“Tô com saudade”',value:'sd'},{label:'“Vem cá um pouquinho”',value:'vem'},{label:'“Te amo”',value:'amo'}]},
+  {id:'q31', title:'Pergunta 31', text:'Quem é mais competitivo?', type:'choice',
+    choices:[{label:'Eu',value:'eu'},{label:'Você',value:'vc'},{label:'Depende do jogo 😏',value:'dep'}]},
+  {id:'q32', title:'Pergunta 32', text:'O que você mais gostaria que o futuro guardasse pra nós?', type:'choice',
+    choices:[{label:'Mais tempo juntos',value:'tmp'},{label:'Mais momentos tranquilos',value:'sd'},{label:'Conquistas lado a lado',value:'abr'}]},
+  {id:'q33', title:'Pergunta 33', text:'O que nunca pode faltar entre nós?', type:'choice',
+    choices:[{label:'Cumplicidade',value:'comp'},{label:'Carinho',value:'car'},{label:'Risos',value:'ris'}]},
+  {id:'q34', title:'Pergunta 34', text:'Qual é o momento que mais representa “a gente”?', type:'choice',
+    choices:[{label:'As conversas longas',value:'conv'},{label:'Os silêncios confortáveis',value:'sil'},{label:'As risadas sem sentido',value:'ris'}]},
+  {id:'q35', title:'Pergunta 35', text:'O que você acha que mais combina com o nosso amor?', type:'choice',
+    choices:[{label:'Leveza',value:'lev'},{label:'Intensidade',value:'int'},{label:'Parceria',value:'par'}]},
+  {id:'invis-36', title:'Pergunta Sincera 8', text:'Escreva algo que você sempre quis me dizer, mas nunca teve coragem.', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'invis037', title:'Pergunta Sincera 9', text:'Qual sensação de estar comigo defina:', type:'invisible', placeholder:'Escreva aqui...'},
+  {id:'q38', title:'Pergunta 38', text:'O que você mais valoriza em mim?', type:'choice',
+    choices:[{label:'Cuidado',value:'cuid'},{label:'Força',value:'for'},{label:'Doçura',value:'doc'}]},
+  {id:'q39', title:'Pergunta 39', text:'Se eu fosse um emote, qual seria?', type:'choice',
+    choices:[{label:'🥺',value:'car'},{label:'😂',value:'lol'},{label:'❤️',value:'love'}]},
+    {id:'q40', title:'Pergunta 40', text:'Se pudesse resumir o que sente por mim sem usar a palavra “amor”, o que diria?', type:'choice',
+    choices:[{label:'Meu porto seguro',value:'inf'},{label:'Minha calma',value:'loop'},{label:'Minha melhor parte',value:'ret'}]},
+  {id:'final', title:'Final', text:'Clique para finalizar — o recado aparecerá junto com o áudio 💖', type:'final'}
+];
+
+
+/* ======================
+   ELEMENTS & STATE
+   ====================== */
+const screen = document.getElementById('screen');
+const bar = document.getElementById('bar');
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const modalContainer = document.getElementById('modalContainer');
+const blackOverlay = document.getElementById('blackOverlay');
+const answersArea = document.getElementById('answersArea');
+const answersList = document.getElementById('answersList');
+const recadoArea = document.getElementById('recadoArea');
+const typewriterEl = document.getElementById('typewriter');
+const confettiCanvas = document.getElementById('confettiCanvas');
+
+let index = 0;
+
+/* ======================
+   STORAGE HELPERS for invisible answers
+   each item: {seq, stageIndex, stageId, text, timestamp}
+   ====================== */
+function getInvis(){ try{ const r = sessionStorage.getItem('invis_answers'); return r ? JSON.parse(r) : []; } catch(e){ return []; } }
+function pushInvis(item){ const a = getInvis(); a.push(item); sessionStorage.setItem('invis_answers', JSON.stringify(a)); }
+
+/* ======================
+   RENDER STAGE
+   ====================== */
+function renderStage(i){
+  const s = STAGES[i];
+  if(!s) return;
+  screen.innerHTML = `<div class="big">${escapeHtml(s.title)}</div><div class="muted" style="max-width:760px">${escapeHtml(s.text)}</div>`;
+  const choices = document.createElement('div'); choices.className='choices';
+
+  if(s.type === 'choice'){
+    (s.choices || []).forEach((c, idx)=>{
+      const b = document.createElement('button'); b.className='choice btn';
+      b.innerHTML = `<div style="font-weight:700">${escapeHtml(c.label || c)}</div>`;
+      b.onclick = ()=> { sessionStorage.setItem(`choice_${i}`, c.value || c.label || idx); goTo(i+1); };
+      choices.appendChild(b);
+    });
+  } else if(s.type === 'invisible'){
+    const b = document.createElement('button'); b.className='choice btn';
+    b.innerHTML = `<div style="font-weight:700">Escrever resposta (invisível)</div><div class="small">Ao enviar, sua resposta será salva e só aparecerá no final.</div>`;
+    b.onclick = ()=> openInvisibleModal(i, s);
+    choices.appendChild(b);
+  } else if(s.type === 'final'){
+    const b = document.createElement('button'); b.className='choice btn';
+    b.innerHTML = `<div style="font-weight:700">Finalizar e ver recado</div>`;
+    b.onclick = ()=> startFinalSequence();
+    choices.appendChild(b);
+  }
+
+  screen.appendChild(choices);
+  bar.style.width = `${Math.round((i / STAGES.length) * 100)}%`;
+  restartBtn.style.display = i>0 ? 'inline-block' : 'none';
+}
+
+/* ======================
+   NAV
+   ====================== */
+function goTo(i){
+  if(i >= STAGES.length) i = STAGES.length - 1;
+  index = i;
+  renderStage(index);
+}
+
+/* ======================
+   MODAL (invisible input) - styled modal with input & buttons
+   ====================== */
+function openInvisibleModal(stageIndex, stageObj){
+  modalContainer.innerHTML = `
+    <div class="modal-bg" id="modalBg">
+      <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>${escapeHtml(stageObj.title)}</strong>
+          <button id="closeModal" class="btn ghost">Fechar</button>
+        </div>
+        <div class="muted" style="margin-top:8px">${escapeHtml(stageObj.text)}</div>
+        <div style="margin-top:12px">
+          <textarea id="invisInput" class="input" rows="4" placeholder="${escapeHtml(stageObj.placeholder||'')}" style="resize:vertical"></textarea>
+          <div class="small">O que você digitar ficará visualmente oculto (texto invisível) — pressione Enviar quando terminar.</div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="sendInvisible" class="btn">Enviar</button>
+          <button id="cancelInvisible" class="btn ghost">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  `;
+  modalContainer.style.display = 'block';
+
+  // make text visually invisible while typing (color + caret transparent)
+  const input = document.getElementById('invisInput');
+  input.style.color = 'transparent';
+  input.style.caretColor = 'transparent';
+  input.setAttribute('autocomplete','off');
+  input.setAttribute('autocorrect','off');
+  input.setAttribute('autocapitalize','off');
+  input.setAttribute('spellcheck','false');
+  input.focus();
+
+  document.getElementById('closeModal').onclick = closeModal;
+  document.getElementById('cancelInvisible').onclick = closeModal;
+
+  document.getElementById('sendInvisible').onclick = ()=>{
+    const val = input.value || '';
+    const seq = Number(sessionStorage.getItem('invis_seq') || 0) + 1;
+    sessionStorage.setItem('invis_seq', seq);
+    pushInvis({ seq, stageIndex, stageId: stageObj.id, text: val, timestamp: Date.now() });
+    closeModal();
+    showTerminal(['Decodificando...', 'Analisando sentimentos...', 'Registrando...'], ()=> goTo(stageIndex+1));
+  };
+
+  function closeModal(){
+    modalContainer.style.display = 'none';
+    modalContainer.innerHTML = '';
+  }
+}
+
+/* ======================
+   Terminal animation helper
+   ====================== */
+function showTerminal(lines, cb){
+  screen.innerHTML = '<div class="terminal" id="term"></div>';
+  const term = document.getElementById('term');
+  let i = 0;
+  function next(){
+    if(i >= lines.length){ cb && cb(); return; }
+    const d = document.createElement('div'); d.textContent = lines[i];
+    term.appendChild(d);
+    i++;
+    setTimeout(next, 800);
+  }
+  next();
+}
+
+/* ======================
+   FINAL SEQUENCE
+   - fade to black
+   - show compiled answers (all at once)
+   - short pause -> hide answers -> show recado area
+   - start audio + typewriter (typing speed attempts to match audio)
+   ====================== */
+function startFinalSequence(){
+  const arr = getInvis().sort((a,b)=>a.seq - b.seq);
+  const audio = FINAL_AUDIO_URL && FINAL_AUDIO_URL.trim() ? new Audio(FINAL_AUDIO_URL) : null;
+
+  // fade-in black overlay
+  blackOverlay.style.pointerEvents = 'auto';
+  blackOverlay.style.opacity = '0';
+  setTimeout(()=>{ blackOverlay.style.opacity = '1'; }, 20);
+
+  // after fade
+  setTimeout(()=>{
+    // populate answers
+    answersList.innerHTML = '';
+    if(arr.length === 0){
+      const el = document.createElement('div'); el.className='answer-item'; el.textContent='(nenhuma resposta escrita)';
+      answersList.appendChild(el);
+    } else {
+      arr.forEach((it, idx)=>{
+        const el = document.createElement('div'); el.className='answer-item';
+        el.innerHTML = `<strong>Resposta ${idx+1}:</strong> ${escapeHtml(it.text || '(vazio)')}`;
+        answersList.appendChild(el);
+      });
+    }
+    // show answers box
+    answersArea.style.opacity = '1';
+    answersArea.style.transform = 'translateY(0)';
+    // wait briefly
+    const showAnswersMs = 3000;
+    setTimeout(()=>{
+      // hide answers quickly
+      answersArea.style.opacity = '0';
+      answersArea.style.transform = 'translateY(6px)';
+      setTimeout(()=>{
+        // show recado area
+        recadoArea.style.opacity = '1';
+        recadoArea.style.transform = 'translateY(0)';
+        // prepare and play audio, sync typewriter
+        if(audio){
+          let synced = false;
+          audio.addEventListener('canplaythrough', ()=> {
+            const fullText = FINAL_MESSAGE;
+            const totalChars = Math.max(1, fullText.length);
+            const charMs = Math.max(12, (audio.duration * 1000) / totalChars);
+            runTypewriter(fullText, charMs);
+            audio.play().catch(()=>{});
+            synced = true;
+          }, {once:true});
+          setTimeout(()=>{
+            if(!synced){
+              runTypewriter(FINAL_MESSAGE, 45);
+              audio.play().catch(()=>{});
+            }
+          }, 900);
+        } else {
+          runTypewriter(FINAL_MESSAGE, 45);
+        }
+      }, 600);
+    }, showAnswersMs);
+  }, 900);
+}
+
+/* ======================
+   TYPEWRITER
+   ====================== */
+function runTypewriter(text, msPerChar = 45){
+  typewriterEl.textContent = '';
+  let i = 0;
+  function step(){
+    if(i <= text.length){
+      typewriterEl.textContent = text.slice(0,i);
+      i++;
+      setTimeout(step, msPerChar);
+    } else {
+      startConfetti();
+      setTimeout(stopConfetti, 3200);
+      blackOverlay.addEventListener('click', ()=> {
+        blackOverlay.style.opacity = '0';
+        blackOverlay.style.pointerEvents = 'none';
+      }, {once:true});
+    }
+  }
+  step();
+}
+
+/* ======================
+   Utilities & confetti
+   ====================== */
+function escapeHtml(t){ return String(t||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]); }
+
+let confettiTimer = null;
+function startConfetti(){
+  if(confettiTimer) return;
+  const ctx = confettiCanvas.getContext('2d');
+  function resize(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  const parts = [];
+  for(let i=0;i<120;i++) parts.push({x:Math.random()*confettiCanvas.width,y:Math.random()*confettiCanvas.height*0.2,vy:1+Math.random()*3,angle:Math.random()*360,size:6+Math.random()*8,color:`hsl(${Math.random()*60+320},80%,60%)`});
+  confettiTimer = setInterval(()=>{
+    ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    for(const p of parts){
+      p.x += Math.sin(p.angle)*0.7; p.y += p.vy; p.angle += 0.03;
+      ctx.fillStyle = p.color; ctx.fillRect(p.x,p.y,p.size,p.size*0.6);
+      if(p.y > confettiCanvas.height){ p.y = -10; p.x = Math.random()*confettiCanvas.width; }
+    }
+  },30);
+}
+function stopConfetti(){ if(confettiTimer){ clearInterval(confettiTimer); confettiTimer = null; const ctx = confettiCanvas.getContext('2d'); ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); } }
+
+/* ======================
+   START / INIT
+   ====================== */
+startBtn.addEventListener('click', ()=>{
+  sessionStorage.removeItem('invis_answers');
+  sessionStorage.removeItem('invis_seq');
+  startBtn.style.display = 'none';
+  renderStage(0);
+});
+restartBtn.addEventListener('click', ()=>{ if(confirm('Reiniciar e apagar respostas?')){ sessionStorage.clear(); index=0; renderStage(0); startBtn.style.display='none'; } });
+
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Enter'){
+    if(modalContainer.style.display === 'block') return;
+    const first = document.querySelector('.choice');
+    if(first) first.click();
+  }
+});
+</script>
+</body>
+</html>
